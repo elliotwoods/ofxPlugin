@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\ofApp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Modules\RectangleShape.cpp">
+      <Filter>src\Modules</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Modules">
+      <UniqueIdentifier>{abf35468-8c4f-4c34-a95a-fbb42f9f8e0b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\ofApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Modules\BaseShape.h">
+      <Filter>src\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Modules\RectangleShape.h">
+      <Filter>src\Modules</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+</Project>
