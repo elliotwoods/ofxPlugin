@@ -1,6 +1,21 @@
+# Introduction
+
+ofxPlugin lets you write an application with openFrameworks which can load in plugins which are also written in openFrameworks, e.g.:
+
+* Application contains a vector of BaseShape
+* Plugin has a class CircleShape which inherits BaseShape
+* Application loads Plugin so that it can create instances of CircleShape
+
+## Naming conventions:
+* `Module` - A (non-abstract) class which the Plugin provides
+* `ModuleBaseType` - A (usually abstract) class which the Module inherits from
+* `Factory<Module>` - A class which can instantiate other classes, e.g. a `Factory<MyModule>` can create instances of `MyModule` class
+* `FactoryRegister<ModuleBaseType>` - A class which contains a list of `Factory`s. All the `Factory`s inside this register will create `Module`s which inherit from `ModuleBaseType`.
+
 # Requirements
 
-Runs on oF 0.9.0. Tested on Visual Studio 2015.
+Currently runs on oF 0.9.0 in Windows. OSX support coming later.
+Tested on Visual Studio 2015.
 
 # Todo
 
