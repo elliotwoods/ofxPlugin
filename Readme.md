@@ -1,3 +1,11 @@
+# Introduction
+
+ofxPlugin lets you write an application with openFrameworks which can load in plugins which are also written in openFrameworks, e.g.:
+
+* Application contains a vector of BaseShape
+* Plugin has a class CircleShape which inherits BaseShape
+* Application loads Plugin so that it can create instances of CircleShape
+
 # Requirements
 
 Runs on oF 0.9.0. Tested on Visual Studio 2015.
