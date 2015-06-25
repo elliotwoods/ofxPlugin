@@ -2,7 +2,12 @@
 
 //----------
 void CircleShape::draw() {
-	ofCircle(x - 5, y - 5, 5);
+	ofPushStyle();
+
+	ofSetColor(255, 100, 100);
+	ofCircle(x, y, 15);
+
+	ofPopStyle();
 }
 
 //----------

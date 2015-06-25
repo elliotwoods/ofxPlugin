@@ -126,11 +126,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\CirclePlugin.cpp" />
+    <ClCompile Include="src\plugin.cpp" />
     <ClCompile Include="src\CircleShape.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\CirclePlugin.h" />
     <ClInclude Include="src\CircleShape.h" />
   </ItemGroup>
   <ItemGroup>

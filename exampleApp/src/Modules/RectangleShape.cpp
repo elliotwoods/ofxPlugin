@@ -2,7 +2,12 @@
 
 //----------
 void RectangleShape::draw() {
-	ofRect(x - 5, y - 5, 10, 10);
+	ofPushStyle();
+
+	ofSetColor(100, 100, 255);
+	ofRect(x - 15, y - 15, 30, 30);
+
+	ofPopStyle();
 }
 
 //----------

@@ -25,9 +25,16 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-		FactoryRegister<BaseShape> factoryRegister; // NOTE : often you'll keep the factoryRegister in a global singleton rather than in a specific class
+		// This is the list of factories
+		// (Factories create classes)
+		// Each FactoryRegister is associated with a base type,
+		//	and all the factories inside it create classes which
+		//	inherit from this base type.
+		FactoryRegister<BaseShape> factoryRegister;
 		
+		// This is the currently selected factory
 		map<string, shared_ptr<BaseFactory<BaseShape>>>::iterator iterator;
 
+		// These are the classes which we've created
 		vector<shared_ptr<BaseShape>> shapes;
 };

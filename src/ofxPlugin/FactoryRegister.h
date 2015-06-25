@@ -1,18 +1,22 @@
 #pragma once
 
 #include "Factory.h"
-#include <Windows.h>
+
 #include "ofAppRunner.h"
 
+#include <Windows.h>
 #include <map>
 
 namespace ofxPlugin {
-	typedef void(*InitPluginFunctionType)(std::shared_ptr<ofMainLoop> *);
-
 	template<typename ModuleBaseType>
 	class FactoryRegister : public std::map<std::string, std::shared_ptr<BaseFactory<ModuleBaseType>>> {
 	public:
-		typedef void (*RegisterFactoriesFunctionType)(FactoryRegister<ModuleBaseType> *);
+		struct PluginInitArgs {
+			std::shared_ptr<ofMainLoop> mainLoop;
+			FactoryRegister<ModuleBaseType> * factoryRegister;
+		};
+
+		typedef void(*InitPluginFunctionType)(PluginInitArgs *);
 
 		///Add a factory which you already have to the register
 		void add(std::shared_ptr<BaseFactory<ModuleBaseType>> baseFactory) {
@@ -50,36 +54,25 @@ namespace ofxPlugin {
 			auto wstringPath = std::wstring(transformedPath.begin(), transformedPath.end());
 			auto wcharPath = wstringPath.c_str();
 			auto dll = LoadLibraryW(wcharPath);
-
 			if (!dll) {
 				ofLogError("ofxPlugin") << "Failed to open DLL [" << transformedPath << "]";
 				return false;
 			}
 
 			//attempt to initialise plugin
-			auto initPlugin = (InitPluginFunctionType)GetProcAddress(dll, "?initPlugin@@YAXPEAV?$shared_ptr@VofMainLoop@@@std@@@Z");
+			auto initPlugin = (InitPluginFunctionType)GetProcAddress(dll, "initPlugin");
 			if (!initPlugin) {
 				if (verbose) {
-					ofLogWarning("ofxPlugin") << "This dll is not a plugin";
+					ofLogWarning("ofxPlugin") << "This DLL file is not a plugin";
 				}
 				FreeLibrary(dll);
 				return false;
 			}
-			auto mainLoop = ofGetMainLoop();
-			initPlugin(&mainLoop);
-
-			//attempt to find function to register new factories
-			auto registerFactories = (RegisterFactoriesFunctionType)GetProcAddress(dll, "?registerFactories@@YAXPEAV?$FactoryRegister@VBaseShape@@@ofxPlugin@@@Z");
-			if (!registerFactories) {
-				if (verbose) {
-					ofLogWarning("ofxPlugin") << "No factories for FactoryRegister<" << typeid(ModuleBaseType).name() << "> found in DLL " << path;
-				}
-				FreeLibrary(dll);
-				return false;
-			}
-
-			//call the function to register factories
-			registerFactories(this);
+			PluginInitArgs pluginInitArgs = {
+				ofGetMainLoop(),
+				this
+			};
+			initPlugin(&pluginInitArgs);
 
 			return true;
 		}

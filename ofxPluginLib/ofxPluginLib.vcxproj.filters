@@ -11,6 +11,9 @@
     <ClInclude Include="..\src\ofxPlugin\FactoryRegister.h">
       <Filter>ofxPlugin</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\ofxPlugin\Plugin.h">
+      <Filter>ofxPlugin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ofxPlugin">
