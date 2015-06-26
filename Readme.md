@@ -7,8 +7,8 @@ ofxPlugin lets you write an application with openFrameworks which can load in pl
 * Application loads Plugin so that it can create instances of CircleShape
 
 ## Naming conventions:
-* `Module` - A (non-abstract) class which the Plugin provides
-* `ModuleBaseType` - A (usually abstract) class which the Module inherits from
+* `Module` - A (non-abstract) class which the Plugin provides (this is the content of your plugin, your plugin may define 1 or more `Module`s)
+* `ModuleBaseType` - A (abstract) class which the Module inherits from
 * `Factory<Module>` - A class which can instantiate other classes, e.g. a `Factory<MyModule>` can create instances of `MyModule` class
 * `FactoryRegister<ModuleBaseType>` - A class which contains a list of `Factory`s. All the `Factory`s inside this register will create `Module`s which inherit from `ModuleBaseType`.
 
