@@ -7,6 +7,30 @@
 #include <Windows.h>
 #include <map>
 
+// If you want to have a singleton pattern. Then :
+//
+//	1. Inherit a class from ofxPlugin::FactoryRegister<ModuleBaseType> (e.g. called simply FactoryRegister in your namespace)
+//
+//  2. Use this define at the top of the class definition in the header (above 'public')
+#define OFXPLUGIN_FACTORY_REGISTER_SINGLETON_HEADER(FactoryRegisterType) \
+public: \
+	static FactoryRegisterType & X(); \
+protected: \
+	static FactoryRegisterType * singleton;
+//
+//  3. Use this define in your source file
+#define OFXPLUGIN_FACTORY_REGISTER_SINGLETON_SOURCE(FactoryRegisterType) FactoryRegisterType * FactoryRegisterType::singleton = nullptr; \
+FactoryRegisterType & FactoryRegisterType::X() { \
+	if (!FactoryRegisterType::singleton) { \
+		FactoryRegisterType::singleton = new FactoryRegisterType(); \
+	} \
+\
+	auto & factoryRegister = *FactoryRegisterType::singleton; \
+	return factoryRegister; \
+}
+//
+// done!
+
 namespace ofxPlugin {
 	template<typename ModuleBaseType>
 	class FactoryRegister : public std::map<std::string, std::shared_ptr<BaseFactory<ModuleBaseType>>> {
@@ -48,14 +72,16 @@ namespace ofxPlugin {
 		}
 
 		///Load any factories from the plugin which match this FactoryRegister
-		bool loadPlugin(std::string path, bool verbose = false) {
+		bool loadPlugin(std::filesystem::path path, bool verbose = false) {
+			//transform path to data path
+			if (path.is_relative()) {
+				path = std::filesystem::path(ofToDataPath("")) / path;
+			}
+
 			//attempt to load DLL
-			auto transformedPath = ofToDataPath(path);
-			auto wstringPath = std::wstring(transformedPath.begin(), transformedPath.end());
-			auto wcharPath = wstringPath.c_str();
-			auto dll = LoadLibraryW(wcharPath);
+			auto dll = LoadLibraryW(path.wstring().c_str());
 			if (!dll) {
-				ofLogError("ofxPlugin") << "Failed to open DLL [" << transformedPath << "]";
+				ofLogError("ofxPlugin") << "Failed to open DLL [" << path << "]";
 				return false;
 			}
 
@@ -75,6 +101,14 @@ namespace ofxPlugin {
 			initPlugin(&pluginInitArgs);
 
 			return true;
+		}
+
+		///Look within a path for dll's and try and find plugins there
+		void loadPlugins(string searchPath = "../") {
+			auto pluginFiles = getPluginFiles();
+			for (auto & entry : std::filesystem::directory_iterator(searchPath)) {
+				this->loadPlugin(entry.path(), false);
+			}
 		}
 	};
 }
