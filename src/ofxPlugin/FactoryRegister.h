@@ -42,9 +42,11 @@ namespace ofxPlugin {
 
 		typedef void(*InitPluginFunctionType)(PluginInitArgs *);
 
+		typedef ofxPlugin::BaseFactory<ModuleBaseType> BaseFactory;
+
 		///Add a factory which you already have to the register
-		void add(std::shared_ptr<BaseFactory<ModuleBaseType>> baseFactory) {
-			this->insert(pair<std::string, std::shared_ptr<BaseFactory<ModuleBaseType>>>(baseFactory->getModuleTypeName(), baseFactory));
+		void add(std::shared_ptr<BaseFactory> baseFactory) {
+			this->insert(pair<std::string, std::shared_ptr<BaseFactory>>(baseFactory->getModuleTypeName(), baseFactory));
 		}
 
 		///Create a factory for a specific type (defined in the template arguments of the function call) and add it to the register.
@@ -61,14 +63,43 @@ namespace ofxPlugin {
 		}
 
 		///Get a factory for a specific type (defined by moduleNameType). Returns an empty pointer if factory wasn't found
-		std::shared_ptr<BaseModule> get(std::string moduleTypeName) {
+		std::shared_ptr<BaseFactory> get(std::string moduleTypeName) {
 			auto findFactory = this->find(moduleTypeName);
 			if (findFactory == this->end()) {
-				return shared_ptr<BaseFactory<ModuleBaseType>>();
+				return shared_ptr<BaseFactory>();
 			}
 			else {
 				return findFactory->second;
 			}
+		}
+
+		// from http://www.codeproject.com/Tips/479880/GetLastError-as-std-string
+		std::string GetLastErrorStdStr()
+		{
+			DWORD error = GetLastError();
+			if (error)
+			{
+				LPVOID lpMsgBuf;
+				DWORD bufLen = FormatMessageA(
+					FORMAT_MESSAGE_ALLOCATE_BUFFER |
+					FORMAT_MESSAGE_FROM_SYSTEM |
+					FORMAT_MESSAGE_IGNORE_INSERTS,
+					NULL,
+					error,
+					MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+					(LPTSTR)&lpMsgBuf,
+					0, NULL);
+				if (bufLen)
+				{
+					LPCSTR lpMsgStr = (LPCSTR)lpMsgBuf;
+					std::string result(lpMsgStr, lpMsgStr + bufLen);
+
+					LocalFree(lpMsgBuf);
+
+					return result;
+				}
+			}
+			return std::string();
 		}
 
 		///Load any factories from the plugin which match this FactoryRegister
@@ -81,7 +112,8 @@ namespace ofxPlugin {
 			//attempt to load DLL
 			auto dll = LoadLibraryW(path.wstring().c_str());
 			if (!dll) {
-				ofLogError("ofxPlugin") << "Failed to open DLL [" << path << "]";
+				auto errorMessage = GetLastErrorStdStr();
+				ofLogWarning("ofxPlugin") << "Failed to open DLL [" << path << "]. " << errorMessage;
 				return false;
 			}
 
@@ -105,9 +137,12 @@ namespace ofxPlugin {
 
 		///Look within a path for dll's and try and find plugins there
 		void loadPlugins(string searchPath = "../") {
-			auto pluginFiles = getPluginFiles();
-			for (auto & entry : std::filesystem::directory_iterator(searchPath)) {
-				this->loadPlugin(entry.path(), false);
+			for (auto & entry : std::filesystem::directory_iterator(ofToDataPath(searchPath))) {
+				const auto extension = entry.path().extension();
+				//check if empty first because ofToLower crashes on empty strings
+				if (!extension.empty() && ofToLower(extension.string()) == ".dll") {
+					this->loadPlugin(entry.path(), false);
+				}
 			}
 		}
 	};
