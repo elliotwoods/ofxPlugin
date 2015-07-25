@@ -4,6 +4,8 @@
 
 #include "ofAppRunner.h"
 
+#include "ofxSingleton.h"
+
 #include <Windows.h>
 #include <map>
 
@@ -11,23 +13,34 @@
 //
 //	1. Inherit a class from ofxPlugin::FactoryRegister<ModuleBaseType> (e.g. called simply FactoryRegister in your namespace)
 //
-//  2. Use this define at the top of the class definition in the header (above 'public')
+//  2. Use this define at the top of the class declaration in the header (above 'public')
 #define OFXPLUGIN_FACTORY_REGISTER_SINGLETON_HEADER(FactoryRegisterType) \
 public: \
 	static FactoryRegisterType & X(); \
+	static void FactoryRegisterType::setSingleton(shared_ptr<FactoryRegisterType>); \
+	static shared_ptr<FactoryRegisterType> FactoryRegisterType::getSingleton(); \
 protected: \
-	static FactoryRegisterType * singleton;
+	static std::shared_ptr<FactoryRegisterType> singleton;
 //
-//  3. Use this define in your source file
-#define OFXPLUGIN_FACTORY_REGISTER_SINGLETON_SOURCE(FactoryRegisterType) FactoryRegisterType * FactoryRegisterType::singleton = nullptr; \
+//  3. Use this define in your class definition in the source file
+#define OFXPLUGIN_FACTORY_REGISTER_SINGLETON_SOURCE(FactoryRegisterType) \
+\
+shared_ptr<FactoryRegisterType> FactoryRegisterType::singleton; \
 FactoryRegisterType & FactoryRegisterType::X() { \
 	if (!FactoryRegisterType::singleton) { \
-		FactoryRegisterType::singleton = new FactoryRegisterType(); \
+		FactoryRegisterType::singleton = std::make_shared<FactoryRegisterType>(); \
 	} \
 \
-	auto & factoryRegister = *FactoryRegisterType::singleton; \
-	return factoryRegister; \
-}
+	return *FactoryRegisterType::singleton; \
+} \
+\
+void FactoryRegisterType::setSingleton(shared_ptr<FactoryRegisterType> singleton) { \
+	FactoryRegisterType::singleton = singleton; \
+} \
+\
+shared_ptr<FactoryRegisterType> FactoryRegisterType::getSingleton() { \
+	return FactoryRegisterType::singleton; \
+} \
 //
 // done!
 
@@ -35,26 +48,33 @@ namespace ofxPlugin {
 	template<typename ModuleBaseType>
 	class FactoryRegister : public std::map<std::string, std::shared_ptr<BaseFactory<ModuleBaseType>>> {
 	public:
+		//----------
 		struct PluginInitArgs {
 			std::shared_ptr<ofMainLoop> mainLoop;
 			FactoryRegister<ModuleBaseType> * factoryRegister;
+			ofxSingleton::Register * singletonRegister;
 		};
 
+		//----------
 		typedef void(*InitPluginFunctionType)(PluginInitArgs *);
 
+		//----------
 		typedef ofxPlugin::BaseFactory<ModuleBaseType> BaseFactory;
 
+		//----------
 		///Add a factory which you already have to the register
 		void add(std::shared_ptr<BaseFactory> baseFactory) {
 			this->insert(pair<std::string, std::shared_ptr<BaseFactory>>(baseFactory->getModuleTypeName(), baseFactory));
 		}
 
+		//----------
 		///Create a factory for a specific type (defined in the template arguments of the function call) and add it to the register.
 		template<typename ModuleType>
 		void add() {
 			this->add(std::make_shared<Factory<ModuleType, ModuleBaseType>>());
 		}
 
+		//----------
 		///Get a factory for a specific type (defined in the template arguments of the function call). Returns an empty pointer if factory wasn't found
 		template<typename ModuleType>
 		std::shared_ptr<ModuleBaseType> get() {
@@ -62,6 +82,7 @@ namespace ofxPlugin {
 			return this->get(moduleTypeName)
 		}
 
+		//----------
 		///Get a factory for a specific type (defined by moduleNameType). Returns an empty pointer if factory wasn't found
 		std::shared_ptr<BaseFactory> get(std::string moduleTypeName) {
 			auto findFactory = this->find(moduleTypeName);
@@ -73,6 +94,7 @@ namespace ofxPlugin {
 			}
 		}
 
+		//----------
 		// from http://www.codeproject.com/Tips/479880/GetLastError-as-std-string
 		std::string GetLastErrorStdStr()
 		{
@@ -102,6 +124,7 @@ namespace ofxPlugin {
 			return std::string();
 		}
 
+		//----------
 		///Load any factories from the plugin which match this FactoryRegister
 		bool loadPlugin(std::filesystem::path path, bool verbose = false) {
 			//transform path to data path
@@ -126,22 +149,26 @@ namespace ofxPlugin {
 				FreeLibrary(dll);
 				return false;
 			}
+			
+			//we are currently in the main application
+			//the initialisation arguments are the 'ofMainLoop' singleton, this factory register, and the 
 			PluginInitArgs pluginInitArgs = {
 				ofGetMainLoop(),
-				this
+				this,
+				& ofxSingleton::Register::X()
 			};
 			initPlugin(&pluginInitArgs);
 
 			return true;
 		}
 
+		//----------
 		///Look within a path for dll's and try and find plugins there
 		void loadPlugins(string searchPath = "../") {
 			for (auto & entry : std::filesystem::directory_iterator(ofToDataPath(searchPath))) {
 				const auto extension = entry.path().extension();
-				//check if empty first because ofToLower crashes on empty strings
-				if (!extension.empty() && ofToLower(extension.string()) == ".dll") {
-					this->loadPlugin(entry.path(), false);
+				if (ofToLower(extension.string()) == ".dll") {
+					this->loadPlugin(entry.path(), false); // try to load it as a plugin
 				}
 			}
 		}
