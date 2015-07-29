@@ -1,6 +1,7 @@
 #pragma once
 #include "ofAppRunner.h"
 #include "FactoryRegister.h"
+#include "ofxSingleton.h"
 
 //define the export syntax
 #define OFXPLUGIN_EXPORT __declspec(dllexport)
@@ -16,7 +17,8 @@ extern "C" { \
 //use this in the cpp file. If we don't have the declaration, then we need to wrap this in extern "C"
 #define OFXPLUGIN_INIT_DEFINITION_BEGIN(ModuleBaseType) \
 OFXPLUGIN_EXPORT void initPlugin(ofxPlugin::FactoryRegister<ModuleBaseType>::PluginInitArgs * pluginInitArgs) { \
-	ofSetMainLoop(pluginInitArgs->mainLoop);
+	ofSetMainLoop(pluginInitArgs->mainLoop); /* set mainloop singleton from app into plugin */ \
+	ofxSingleton::Register::X().setParentRegister(pluginInitArgs->singletonRegister); // set plugin singleton register to have app's singleton register as parent
 
 #define OFXPLUGIN_INIT_DEFINITION_END \
 }

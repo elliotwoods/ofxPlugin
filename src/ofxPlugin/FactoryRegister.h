@@ -52,7 +52,7 @@ namespace ofxPlugin {
 		struct PluginInitArgs {
 			std::shared_ptr<ofMainLoop> mainLoop;
 			FactoryRegister<ModuleBaseType> * factoryRegister;
-			ofxSingleton::Register * singletonRegister;
+			shared_ptr<ofxSingleton::Register> singletonRegister;
 		};
 
 		//----------
@@ -109,7 +109,7 @@ namespace ofxPlugin {
 					NULL,
 					error,
 					MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-					(LPTSTR)&lpMsgBuf,
+					(LPSTR)&lpMsgBuf,
 					0, NULL);
 				if (bufLen)
 				{
@@ -152,10 +152,11 @@ namespace ofxPlugin {
 			
 			//we are currently in the main application
 			//the initialisation arguments are the 'ofMainLoop' singleton, this factory register, and the 
+			auto singletonRegister = ofxSingleton::Register::X().getSingleton();
 			PluginInitArgs pluginInitArgs = {
 				ofGetMainLoop(),
 				this,
-				& ofxSingleton::Register::X()
+				singletonRegister
 			};
 			initPlugin(&pluginInitArgs);
 

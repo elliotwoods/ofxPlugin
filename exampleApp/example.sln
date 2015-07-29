@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openframeworksLib", "..\..\..\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj", "{5837595D-ACA9-485C-8E76-729040CE4B0B}"
 EndProject
@@ -9,6 +9,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "exampleApp", "exampleApp.vcxproj", "{7FD42DF7-442E-479A-BA76-D0022F99702A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "examplePlugin", "..\examplePlugin\examplePlugin.vcxproj", "{F8877612-5358-423D-980F-28A6DBDF252E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ofxSingleton", "..\..\ofxSingleton\ofxSingletonLib\ofxSingleton.vcxproj", "{4D3BCFDD-E65D-4247-B303-E0839CAEC6A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +52,14 @@ Global
 		{F8877612-5358-423D-980F-28A6DBDF252E}.Release|Win32.Build.0 = Release|x64
 		{F8877612-5358-423D-980F-28A6DBDF252E}.Release|x64.ActiveCfg = Release|x64
 		{F8877612-5358-423D-980F-28A6DBDF252E}.Release|x64.Build.0 = Release|x64
+		{4D3BCFDD-E65D-4247-B303-E0839CAEC6A6}.Debug|Win32.ActiveCfg = Release|x64
+		{4D3BCFDD-E65D-4247-B303-E0839CAEC6A6}.Debug|Win32.Build.0 = Release|x64
+		{4D3BCFDD-E65D-4247-B303-E0839CAEC6A6}.Debug|x64.ActiveCfg = Release|x64
+		{4D3BCFDD-E65D-4247-B303-E0839CAEC6A6}.Debug|x64.Build.0 = Release|x64
+		{4D3BCFDD-E65D-4247-B303-E0839CAEC6A6}.Release|Win32.ActiveCfg = Release|Win32
+		{4D3BCFDD-E65D-4247-B303-E0839CAEC6A6}.Release|Win32.Build.0 = Release|Win32
+		{4D3BCFDD-E65D-4247-B303-E0839CAEC6A6}.Release|x64.ActiveCfg = Release|x64
+		{4D3BCFDD-E65D-4247-B303-E0839CAEC6A6}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
