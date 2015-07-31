@@ -9,6 +9,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>../../../addons/ofxPlugin/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MinimalRebuild>false</MinimalRebuild>
+      <PreprocessorDefinitions>$(TargetName)_Exports;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />
