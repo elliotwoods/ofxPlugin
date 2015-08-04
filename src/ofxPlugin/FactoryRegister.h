@@ -52,7 +52,7 @@ namespace ofxPlugin {
 		struct PluginInitArgs {
 			std::shared_ptr<ofMainLoop> mainLoop;
 			FactoryRegister<ModuleBaseType> * factoryRegister;
-			shared_ptr<ofxSingleton::Register> singletonRegister;
+			ofxSingleton::Register * singletonRegister;
 		};
 
 		//----------
@@ -152,11 +152,11 @@ namespace ofxPlugin {
 			
 			//we are currently in the main application
 			//the initialisation arguments are the 'ofMainLoop' singleton, this factory register, and the 
-			auto singletonRegister = ofxSingleton::Register::X().getSingleton();
+			auto singletonRegisterRawPointer = ofxSingleton::Register::X().getInstance().get();
 			PluginInitArgs pluginInitArgs = {
 				ofGetMainLoop(),
 				this,
-				singletonRegister
+				singletonRegisterRawPointer
 			};
 			initPlugin(&pluginInitArgs);
 
