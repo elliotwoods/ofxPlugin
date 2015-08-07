@@ -9,41 +9,6 @@
 #include <Windows.h>
 #include <map>
 
-// If you want to have a singleton pattern. Then :
-//
-//	1. Inherit a class from ofxPlugin::FactoryRegister<ModuleBaseType> (e.g. called simply FactoryRegister in your namespace)
-//
-//  2. Use this define at the top of the class declaration in the header (above 'public')
-#define OFXPLUGIN_FACTORY_REGISTER_SINGLETON_HEADER(FactoryRegisterType) \
-public: \
-	static FactoryRegisterType & X(); \
-	static void FactoryRegisterType::setSingleton(shared_ptr<FactoryRegisterType>); \
-	static shared_ptr<FactoryRegisterType> FactoryRegisterType::getSingleton(); \
-protected: \
-	static std::shared_ptr<FactoryRegisterType> singleton;
-//
-//  3. Use this define in your class definition in the source file
-#define OFXPLUGIN_FACTORY_REGISTER_SINGLETON_SOURCE(FactoryRegisterType) \
-\
-shared_ptr<FactoryRegisterType> FactoryRegisterType::singleton; \
-FactoryRegisterType & FactoryRegisterType::X() { \
-	if (!FactoryRegisterType::singleton) { \
-		FactoryRegisterType::singleton = std::make_shared<FactoryRegisterType>(); \
-	} \
-\
-	return *FactoryRegisterType::singleton; \
-} \
-\
-void FactoryRegisterType::setSingleton(shared_ptr<FactoryRegisterType> singleton) { \
-	FactoryRegisterType::singleton = singleton; \
-} \
-\
-shared_ptr<FactoryRegisterType> FactoryRegisterType::getSingleton() { \
-	return FactoryRegisterType::singleton; \
-} \
-//
-// done!
-
 namespace ofxPlugin {
 	template<typename ModuleBaseType>
 	class FactoryRegister : public std::map<std::string, std::shared_ptr<BaseFactory<ModuleBaseType>>> {
