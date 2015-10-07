@@ -140,6 +140,11 @@
   <ItemGroup>
     <ClCompile Include="..\src\ofxPlugin\FactoryRegister.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ofxSingleton\ofxSingletonLib\ofxSingleton.vcxproj">
+      <Project>{4d3bcfdd-e65d-4247-b303-e0839caec6a6}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
