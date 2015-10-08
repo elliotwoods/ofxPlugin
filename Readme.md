@@ -15,11 +15,18 @@ ofxPlugin lets you write an application with openFrameworks which can load in pl
 # Requirements
 
 Currently runs on oF 0.9.0 in Windows. OSX support coming later.
-Tested on Visual Studio 2015.
+Tested on Visual Studio 2015, but should work on earlier versions too (if you switch the `Platform Toolset` in the appropriate projects).
+
+## Addon dependencies
+
+You must have the following addons available in your `addons` folder:
+
+* [ofxSingleton](https://github.com/elliotwoods/ofxSingleton) (tested with 3af7ff04ff2fcb71a11c0960e8dfe32f043f4165 on 2015/10/08)
+* [ofxAddonLib](https://github.com/elliotwoods/ofxAddonLib)   (tested with 6c3b3a6bfcaacf8b6340abb8444030e604b65e89 on 2015/10/08)
 
 # Todo
 
-Auto-name handling (currently digging the names out of dumpbin logs).
+Auto-name handling for symbols to import (currently digging the names out of dumpbin logs).
 
 # Notes
 
@@ -31,7 +38,3 @@ Your `ModuleBaseType` must be a non abstract class, i.e. it cannot have somethin
 
 Your plugin needs references to openframeworksLib (and anything else it references).
 
-# Dependencies
-
-* [ofxSingleton](https://github.com/elliotwoods/ofxSingleton) @ 3af7ff04ff2fcb71a11c0960e8dfe32f043f4165
-* [ofxAddonLib](https://github.com/elliotwoods/ofxAddonLib)   @ 6c3b3a6bfcaacf8b6340abb8444030e604b65e89
