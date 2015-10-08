@@ -30,3 +30,8 @@ ofxPlugin provides a `FactoryRegister` where you can store all these factories. 
 Your `ModuleBaseType` must be a non abstract class, i.e. it cannot have something like `virtual void draw() = 0;`. This hurts I know, but it's necessary for a factory model to work well.
 
 Your plugin needs references to openframeworksLib (and anything else it references).
+
+# Dependencies
+
+* [ofxSingleton](https://github.com/elliotwoods/ofxSingleton) @ 3af7ff04ff2fcb71a11c0960e8dfe32f043f4165
+* [ofxAddonLib](https://github.com/elliotwoods/ofxAddonLib)   @ 6c3b3a6bfcaacf8b6340abb8444030e604b65e89
