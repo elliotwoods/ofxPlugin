@@ -25,4 +25,7 @@
       <Filter>ofxPlugin</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Readme.md" />
+  </ItemGroup>
 </Project>

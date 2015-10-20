@@ -6,6 +6,8 @@
 // First include the headers for any classes that you want to include
 #include "CircleShape.h"
 
-OFXPLUGIN_INIT_BEGIN(BaseShape)
-	OFXPLUGIN_REGISTER(CircleShape);
-OFXPLUGIN_INIT_END
+OFXPLUGIN_PLUGIN_MODULES_BEGIN(BaseShape)
+	OFXPLUGIN_PLUGIN_REGISTER_MODULE(CircleShape);
+OFXPLUGIN_PLUGIN_MODULES_END
+
+OFXPLUGIN_EXPORT void initPlugin();

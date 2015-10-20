@@ -22,6 +22,7 @@ namespace ofxPlugin {
 
 		//----------
 		typedef void(*InitPluginFunctionType)(PluginInitArgs *);
+		typedef const char *(*GetPluginTypeNameType)();
 
 		//----------
 		typedef ofxPlugin::BaseFactory<ModuleBaseType> BaseFactory;
@@ -105,8 +106,27 @@ namespace ofxPlugin {
 				return false;
 			}
 
+			//check if dll contains plugin and what type it is
+			auto getPluginTypeName = (GetPluginTypeNameType)GetProcAddress(dll, "getPluginTypeName");
+			if (!getPluginTypeName) {
+				if (verbose) {
+					ofLogWarning("ofxPlugin") << "This DLL file is not a plugin";
+				}
+				FreeLibrary(dll);
+				return false;
+			}
+			auto pluginTypeName = getPluginTypeName();
+			auto ourTypeName = typeid(ModuleBaseType).name();
+			if (string(pluginTypeName) != string(ourTypeName)) {
+				if (verbose) {
+					ofLogWarning("ofxPlugin") << "This DLL file contains a plugin of the incorrect type (" << pluginTypeName << "), we are (" << ourTypeName << ")";
+				}
+				FreeLibrary(dll);
+				return false;
+			}
+
 			//attempt to initialise plugin
-			auto initPlugin = (InitPluginFunctionType) (GetProcAddress(dll, "initPlugin"));
+			auto initPlugin = (InitPluginFunctionType) GetProcAddress(dll, "initPlugin");
 			if (!initPlugin) {
 				if (verbose) {
 					ofLogWarning("ofxPlugin") << "This DLL file is not a plugin";
