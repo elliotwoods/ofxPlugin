@@ -106,7 +106,7 @@ namespace ofxPlugin {
 			}
 
 			//attempt to initialise plugin
-			auto initPlugin = (InitPluginFunctionType)GetProcAddress(dll, "initPlugin");
+			auto initPlugin = (InitPluginFunctionType) (GetProcAddress(dll, "initPlugin"));
 			if (!initPlugin) {
 				if (verbose) {
 					ofLogWarning("ofxPlugin") << "This DLL file is not a plugin";
@@ -131,10 +131,16 @@ namespace ofxPlugin {
 		//----------
 		///Look within a path for dll's and try and find plugins there
 		void loadPlugins(string searchPath = "../") {
-			for (auto & entry : std::filesystem::directory_iterator(ofToDataPath(searchPath))) {
+			auto exePath = ofToDataPath(searchPath, true);
+			for (auto & entry : std::filesystem::directory_iterator(exePath)) {
 				const auto extension = entry.path().extension();
 				if (ofToLower(extension.string()) == ".dll") {
-					this->loadPlugin(entry.path(), false); // try to load it as a plugin
+					try {
+						this->loadPlugin(entry.path(), false); // try to load it as a plugin
+					}
+					catch (std::exception e) {
+						ofLogError("ofxPlugin") << "Failed to load '" << entry.path() << "' : " << e.what();
+					}
 				}
 			}
 		}
