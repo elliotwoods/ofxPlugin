@@ -150,7 +150,11 @@ namespace ofxPlugin {
 
 		//----------
 		///Look within a path for dll's and try and find plugins there
-		void loadPlugins(string searchPath = "../") {
+		void loadPlugins(string searchPath = "../", bool verbose = true) {
+			if (verbose) {
+				cout << "--" << endl;
+				cout << "Loading plugins of type [" << typeid(ModuleBaseType).name() << "] begin" << endl;
+			}
 			auto exePath = ofToDataPath(searchPath, true);
 			for (auto & entry : std::filesystem::directory_iterator(exePath)) {
 				const auto extension = entry.path().extension();
@@ -162,6 +166,11 @@ namespace ofxPlugin {
 						ofLogError("ofxPlugin") << "Failed to load '" << entry.path() << "' : " << e.what();
 					}
 				}
+			}
+
+			if (verbose) {
+				cout << "Loading plugins of type [" << typeid(ModuleBaseType).name() << "] end" << endl;
+				cout << "--" << endl;
 			}
 		}
 	};
