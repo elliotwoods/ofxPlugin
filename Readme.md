@@ -1,10 +1,14 @@
 # Introduction
 
-ofxPlugin lets you write an application with openFrameworks which can load in plugins which are also written in openFrameworks, e.g.:
+Write a plugin in openFrameworks. Write an app which can load those plugins at runtime in openFrameworks. You have:
 
-* Application contains a vector of BaseShape
-* Plugin has a class CircleShape which inherits BaseShape
-* Application loads Plugin so that it can create instances of CircleShape
+* Application has `main.cpp`
+* Plugin has `plugin.cpp`
+
+Example pattern:
+* Application contains an abstract class definition `BaseShape`
+* Plugin has a class `CircleShape` which inherits `BaseShape`
+* Application loads Plugin, and now can create instances of `CircleShape`
 
 ## Naming conventions:
 * `Module` - A (non-abstract) class which the Plugin provides (this is the content of your plugin, your plugin may define 1 or more `Module`s)
