@@ -6,7 +6,14 @@
 
 #include "ofxSingleton.h"
 
+#ifdef _MSC_VER
 #include <Windows.h>
+#else
+#include <dlfcn.h>
+#define GetProcAddress(DLL, NAME) dlsym(DLL, NAME)
+#define FreeLibrary(DLL) dlclose(DLL)
+#endif
+
 #include <map>
 
 namespace ofxPlugin {
@@ -45,7 +52,7 @@ namespace ofxPlugin {
 		template<typename ModuleType>
 		std::shared_ptr<ModuleBaseType> get() {
 			auto moduleTypeName = ModuleType().getTypeName();
-			return this->get(moduleTypeName)
+			return this->get(moduleTypeName);
 		}
 
 		//----------
@@ -64,6 +71,7 @@ namespace ofxPlugin {
 		// from http://www.codeproject.com/Tips/479880/GetLastError-as-std-string
 		std::string GetLastErrorStdStr()
 		{
+#ifdef _MSC_VER
 			DWORD error = GetLastError();
 			if (error)
 			{
@@ -87,6 +95,13 @@ namespace ofxPlugin {
 					return result;
 				}
 			}
+#else
+			char *error = dlerror();
+			if (error)
+			{
+				return error;
+			}
+#endif
 			return std::string();
 		}
 
@@ -97,9 +112,13 @@ namespace ofxPlugin {
 			if (path.is_relative()) {
 				path = std::filesystem::path(ofToDataPath("")) / path;
 			}
-
+			
 			//attempt to load DLL
+#ifdef _MSC_VER
 			auto dll = LoadLibraryW(path.wstring().c_str());
+#else
+			auto dll = dlopen(path.string().c_str(), RTLD_LAZY);
+#endif
 			if (!dll) {
 				auto errorMessage = GetLastErrorStdStr();
 				ofLogWarning("ofxPlugin") << "Failed to open DLL [" << path << "]. " << errorMessage;
@@ -115,6 +134,7 @@ namespace ofxPlugin {
 				FreeLibrary(dll);
 				return false;
 			}
+			
 			auto pluginTypeName = getPluginTypeName();
 			auto ourTypeName = typeid(ModuleBaseType).name();
 			if (string(pluginTypeName) != string(ourTypeName)) {
@@ -124,7 +144,7 @@ namespace ofxPlugin {
 				FreeLibrary(dll);
 				return false;
 			}
-
+			
 			//attempt to initialise plugin
 			auto initPlugin = (InitPluginFunctionType) GetProcAddress(dll, "initPlugin");
 			if (!initPlugin) {
@@ -134,7 +154,7 @@ namespace ofxPlugin {
 				FreeLibrary(dll);
 				return false;
 			}
-			
+
 			//we are currently in the main application
 			//the initialisation arguments are the 'ofMainLoop' singleton, this factory register, and the 
 			auto singletonRegisterRawPointer = ofxSingleton::Register::X().getInstance().get();

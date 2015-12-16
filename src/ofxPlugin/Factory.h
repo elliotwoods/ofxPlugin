@@ -27,7 +27,7 @@ namespace ofxPlugin {
 		}
 
 		std::shared_ptr<ModuleBaseType> makeUntyped() override {
-			return static_pointer_cast<ModuleBaseType>(this->make());
+			return std::static_pointer_cast<ModuleBaseType>(this->make());
 		}
 
 		std::shared_ptr<ModuleBaseType> make() {

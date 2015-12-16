@@ -13,7 +13,11 @@ void ofApp::setup() {
 	// Load our plugin dll (windows) / dylib (osx)
 	// The path is relative to the data folder, so we use ..
 	// true = verbose mode
+#ifdef _WIN32
 	factoryRegister.loadPlugin("../examplePlugin.dll", true);
+#else
+	factoryRegister.loadPlugin("../examplePlugin.dylib", true);
+#endif
 
 	// Every time the mouse moves, we're going to choose a new shape to make (i.e. step through the list of factories)
 	auto firstFactory = factoryRegister.begin();

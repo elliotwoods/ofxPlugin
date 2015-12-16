@@ -7,7 +7,11 @@
 #include <typeinfo>
 
 //define the export syntax
+#ifdef WIN32
 #define OFXPLUGIN_EXPORT __declspec(dllexport)
+#else
+#define OFXPLUGIN_EXPORT
+#endif
 
 
 //generally we don't use the declraration
