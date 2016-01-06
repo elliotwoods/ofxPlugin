@@ -3,6 +3,7 @@
 #include "Factory.h"
 
 #include "ofAppRunner.h"
+#include "ofConstants.h"
 
 #include "ofxSingleton.h"
 
@@ -121,7 +122,7 @@ namespace ofxPlugin {
 #endif
 			if (!dll) {
 				auto errorMessage = GetLastErrorStdStr();
-				ofLogWarning("ofxPlugin") << "Failed to open DLL [" << path << "]. " << errorMessage;
+				ofLogWarning("ofxPlugin") << "Failed to open dynamic library file [" << path << "]. " << errorMessage;
 				return false;
 			}
 
@@ -178,7 +179,12 @@ namespace ofxPlugin {
 			auto exePath = ofToDataPath(searchPath, true);
 			for (auto & entry : std::filesystem::directory_iterator(exePath)) {
 				const auto extension = entry.path().extension();
-				if (ofToLower(extension.string()) == ".dll") {
+#ifdef TARGET_WIN32
+                string desiredExtension = ".dll";
+#else
+                string desiredExtension = ".dylib";
+#endif
+				if (ofToLower(extension.string()) == desiredExtension) {
 					try {
 						this->loadPlugin(entry.path(), false); // try to load it as a plugin
 					}
