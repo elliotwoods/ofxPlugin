@@ -16,9 +16,10 @@ Example pattern:
 * `Factory<Module>` - A class which can instantiate other classes, e.g. a `Factory<MyModule>` can create instances of `MyModule` class
 * `FactoryRegister<ModuleBaseType>` - A class which contains a list of `Factory`s. All the `Factory`s inside this register will create `Module`s which inherit from `ModuleBaseType`.
 
-# Requirements
+# Requirements / Compatability
 
-Currently runs on oF 0.9.0 in Windows. OSX support coming later.
+Currently runs on oF 0.9.0 in Windows. Thanks to work by @satoruhiga, ofxPlugin will compile in OSX without issues, but the main plugin loading features are still untested.
+
 Tested on Visual Studio 2015, but should work on earlier versions too (be aware of changing the `Platform Toolset` option in all the relevant projects).
 
 ## Addon dependencies
@@ -40,7 +41,7 @@ Your `ModuleBaseType` must be a non abstract class, i.e. it cannot have somethin
 
 Your plugin needs references to openframeworksLib, ofxSingletonLib, and anything else it references.
 
-# Curren limitations / Known issues
+# Current limitations / Known issues
 
 * All plugins in one dll must inherit from the same `ModuleBaseType`
 * Plugins are never unloaded until the application terminates (you can still manually remove factories from the `FactoryRegister`).
