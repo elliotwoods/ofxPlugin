@@ -10,7 +10,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "exampleApp", "exampleApp.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "examplePlugin", "..\examplePlugin\examplePlugin.vcxproj", "{F8877612-5358-423D-980F-28A6DBDF252E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ofxSingleton", "..\..\ofxSingleton\ofxSingletonLib\ofxSingleton.vcxproj", "{4D3BCFDD-E65D-4247-B303-E0839CAEC6A6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ofxSingleton", "..\..\..\addons\ofxSingleton\ofxSingletonLib\ofxSingleton.vcxproj", "{4D3BCFDD-E65D-4247-B303-E0839CAEC6A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
