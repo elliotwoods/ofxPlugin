@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofAppRunner.h"
+#include "ofGLRenderer.h"
 #include "FactoryRegister.h"
 #include "ofxSingleton.h"
 
@@ -27,9 +28,9 @@ OFXPLUGIN_EXPORT const char * getPluginTypeName() { \
 	return typeid(ModuleBaseType).name(); \
 } \
 OFXPLUGIN_EXPORT void initPlugin(ofxPlugin::FactoryRegister<ModuleBaseType>::PluginInitArgs * pluginInitArgs) { \
+	glewInit(); \
 	//ofSetMainLoop(pluginInitArgs->mainLoop); /* set mainloop singleton from app into plugin */ \
 	//ofxSingleton::Register::X().setParentRegister(pluginInitArgs->singletonRegister); // set plugin singleton register to have app's singleton register as parent
-
 #define OFXPLUGIN_INIT_DEFINITION_END \
 }
 
