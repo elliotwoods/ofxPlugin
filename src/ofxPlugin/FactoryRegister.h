@@ -171,7 +171,7 @@ namespace ofxPlugin {
 
 		//----------
 		///Look within a path for dll's and try and find plugins there
-		void loadPlugins(string searchPath = "../", bool verbose = true) {
+		void loadPlugins(std::string searchPath = "../", bool verbose = true) {
 			if (verbose) {
 				cout << "--" << endl;
 				cout << "Loading plugins of type [" << typeid(ModuleBaseType).name() << "] begin" << endl;
