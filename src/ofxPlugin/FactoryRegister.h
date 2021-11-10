@@ -51,7 +51,7 @@ namespace ofxPlugin {
 		//----------
 		///Get a factory for a specific type (defined in the template arguments of the function call). Returns an empty pointer if factory wasn't found
 		template<typename ModuleType>
-		std::shared_ptr<ModuleBaseType> get() {
+		std::shared_ptr<BaseFactory> get() {
 			auto moduleTypeName = ModuleType().getTypeName();
 			return this->get(moduleTypeName);
 		}
