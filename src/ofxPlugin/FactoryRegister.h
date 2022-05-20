@@ -38,7 +38,7 @@ namespace ofxPlugin {
 		//----------
 		///Add a factory which you already have to the register
 		void add(std::shared_ptr<BaseFactory> baseFactory) {
-			this->insert(pair<std::string, std::shared_ptr<BaseFactory>>(baseFactory->getModuleTypeName(), baseFactory));
+			this->insert(std::pair<std::string, std::shared_ptr<BaseFactory>>(baseFactory->getModuleTypeName(), baseFactory));
 		}
 
 		//----------
@@ -61,7 +61,7 @@ namespace ofxPlugin {
 		std::shared_ptr<BaseFactory> get(std::string moduleTypeName) {
 			auto findFactory = this->find(moduleTypeName);
 			if (findFactory == this->end()) {
-				return shared_ptr<BaseFactory>();
+				return std::shared_ptr<BaseFactory>();
 			}
 			else {
 				return findFactory->second;
@@ -138,7 +138,7 @@ namespace ofxPlugin {
 			
 			auto pluginTypeName = getPluginTypeName();
 			auto ourTypeName = typeid(ModuleBaseType).name();
-			if (string(pluginTypeName) != string(ourTypeName)) {
+			if (std::string(pluginTypeName) != std::string(ourTypeName)) {
 				if (verbose) {
 					ofLogWarning("ofxPlugin") << "This DLL file contains a plugin of the incorrect type (" << pluginTypeName << "), we are (" << ourTypeName << ")";
 				}
@@ -173,16 +173,16 @@ namespace ofxPlugin {
 		///Look within a path for dll's and try and find plugins there
 		void loadPlugins(std::string searchPath = "../", bool verbose = true) {
 			if (verbose) {
-				cout << "--" << endl;
-				cout << "Loading plugins of type [" << typeid(ModuleBaseType).name() << "] begin" << endl;
+				std::cout << "--" << std::endl;
+				std::cout << "Loading plugins of type [" << typeid(ModuleBaseType).name() << "] begin" << std::endl;
 			}
 			auto exePath = ofToDataPath(searchPath, true);
 			for (auto & entry : std::filesystem::directory_iterator(exePath)) {
 				const auto extension = entry.path().extension();
 #ifdef TARGET_WIN32
-                string desiredExtension = ".dll";
+                std::string desiredExtension = ".dll";
 #else
-                string desiredExtension = ".dylib";
+                std::string desiredExtension = ".dylib";
 #endif
 				if (ofToLower(extension.string()) == desiredExtension) {
 					try {
@@ -195,8 +195,8 @@ namespace ofxPlugin {
 			}
 
 			if (verbose) {
-				cout << "Loading plugins of type [" << typeid(ModuleBaseType).name() << "] end" << endl;
-				cout << "--" << endl;
+				std::cout << "Loading plugins of type [" << typeid(ModuleBaseType).name() << "] end" << std::endl;
+				std::cout << "--" << std::endl;
 			}
 		}
 	};
