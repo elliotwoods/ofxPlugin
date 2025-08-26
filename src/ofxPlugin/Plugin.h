@@ -21,9 +21,17 @@ extern "C" { \
 	OFXPLUGIN_EXPORT void initPlugin(ofxPlugin::FactoryRegister<ModuleBaseType>::PluginInitArgs * pluginInitArgs); \
 }
 
+// Define debug detector
+#if defined(NDEBUG) && !defined(_DEBUG)
+	#define CHECK_DEBUG OFXPLUGIN_EXPORT bool getPluginIsDebug() { return false; }
+#else
+	#define CHECK_DEBUG OFXPLUGIN_EXPORT bool getPluginIsDebug() { return true; }
+#endif
+
 
 //use this in the cpp file. If we don't have the declaration, then we need to wrap this in extern "C"
 #define OFXPLUGIN_INIT_DEFINITION_BEGIN(ModuleBaseType) \
+CHECK_DEBUG \
 OFXPLUGIN_EXPORT const char * getPluginTypeName() { \
 	return typeid(ModuleBaseType).name(); \
 } \

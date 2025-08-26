@@ -30,7 +30,8 @@ namespace ofxPlugin {
 
 		//----------
 		typedef void(*InitPluginFunctionType)(PluginInitArgs *);
-		typedef const char *(*GetPluginTypeNameType)();
+		typedef const char* (*GetPluginTypeNameType)();
+		typedef bool(*GetPluginIsDebugType)();
 
 		//----------
 		typedef ofxPlugin::BaseFactory<ModuleBaseType> BaseFactory;
@@ -134,6 +135,31 @@ namespace ofxPlugin {
 				}
 				FreeLibrary(dll);
 				return false;
+			}
+
+			//check if dll is of same build type
+			auto getPluginIsDebug = (GetPluginIsDebugType)GetProcAddress(dll, "getPluginIsDebug");
+			if (!getPluginIsDebug) {
+				if (verbose) {
+					ofLogWarning("ofxPlugin") << "Couldn't determine build type";
+				}
+				FreeLibrary(dll);
+				return false;
+			}
+			else {
+				auto pluginIsDebug = getPluginIsDebug();
+#if defined(NDEBUG) && !defined(_DEBUG)
+				bool appIsDebug = false;
+#else
+				bool appIsDebug = true;
+#endif
+				if (pluginIsDebug != appIsDebug) {
+					if (verbose) {
+						ofLogWarning("ofxPlugin") << "Plugin is not of same build type as application";
+					}
+					FreeLibrary(dll);
+					return false;
+				}
 			}
 			
 			auto pluginTypeName = getPluginTypeName();
